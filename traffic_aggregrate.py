@@ -5,6 +5,10 @@ from bson.code import Code
 from pymongo import MongoClient
 import csv
 import sys
+import matplotlib.dates as dt
+import matplotlib.pyplot as plt
+import numpy as np
+from operator import itemgetter
 
 class mongo_host(object):
     def __init__(self,mongo_db):
@@ -15,7 +19,7 @@ class mongo_host(object):
 
     def get_traffic(self):
         try:
-            tw_stuff = self.collection.aggregate([
+            results = self.collection.aggregate([
                 {"$group":{
                     "_id": {
                         "y": { "$year": self.time_field },
@@ -28,10 +32,53 @@ class mongo_host(object):
                     }
                 }
                 ])
-            return tw_stuff
+            return results
         except:
             return False
 
+def plot_data(results):
+    traffic = []
+    dates = []
+    counts = []
+
+    year=month=day=hour=mins = 0
+
+    for each in results['result']:
+        if 'y' in each.get('_id', {}):
+            year = int(each['_id']['y'])
+        if 'm' in each.get('_id', {}):
+            month = int(each['_id']['m'])
+        if 'd' in each.get('_id', {}):
+            day = int(each['_id']['d'])
+        if 'h' in each.get('_id', {}):
+            hour = int(each['_id']['h'])
+        if 'i' in each.get('_id', {}):
+            mins = int(each['_id']['i'])
+
+        date_time = datetime.datetime(year,month,day,hour,mins)
+
+        traffic.append([date_time,each['count']])
+
+    traffic = sorted(traffic, key=itemgetter(0))
+
+    for each in traffic:
+        dates.append(dt.date2num(each[0]))
+        counts.append(each[1])
+
+
+    fig, ax = plt.subplots()
+
+    ax.plot(dates,counts, "r-o")
+    ax.set_xticks(dates)
+    ax.set_xticklabels(
+        [date.strftime("%Y-%m-%d %H:%M") for (date, count) in traffic]
+        )
+    ax.autoscale_view()
+    ax.grid(True)
+    fig.autofmt_xdate() 
+    plt.ylabel('Number of tweets')
+    plt.xlabel('Time')
+    plt.show()
 
 if __name__ == '__main__':
     total = len(sys.argv)
@@ -50,4 +97,6 @@ if __name__ == '__main__':
     
     conn = mongo_host(mongo_db)
 
-    print conn.get_traffic()
+    results = conn.get_traffic()
+    if results:
+        plot_data(results)
