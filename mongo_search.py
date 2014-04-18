@@ -19,14 +19,19 @@ class mongo_host(object):
 
     def get_data(self):
         try:
-            results = []
+            #results = []
             for doc in self.collection.find({"geo.type":"Point"}):
-                print doc['geo']
-                results.append(doc['geo'])
+                result = {
+                    'time' : doc['created_at'],
+                    'geo' : doc['geo']['coordinates']
+                }
+                yield result
+                #results.append(doc['geo'])
             
-            return results
+            # return results
         except:
-            return False
+            pass
+            # return False
 
 
 if __name__ == '__main__':
@@ -46,6 +51,9 @@ if __name__ == '__main__':
     
     conn = mongo_host(mongo_db)
 
-    results = conn.get_data()
-    if results:
-        print results
+    for result in conn.get_data():
+        print result
+
+    # results = conn.get_data()
+    # if results:
+    #     print results
