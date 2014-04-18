@@ -20,8 +20,8 @@ class mongo_host(object):
     def get_data(self):
         try:
             results = []
-            for doc in self.collection.find({"geo":{"$exists":True}}):
-                print doc
+            for doc in self.collection.find({"geo.type":"Point"}):
+                print doc['geo']
                 results.append(doc['geo'])
             
             return results
@@ -46,6 +46,6 @@ if __name__ == '__main__':
     
     conn = mongo_host(mongo_db)
 
-    results = conn.get_traffic()
+    results = conn.get_data()
     if results:
         print results
