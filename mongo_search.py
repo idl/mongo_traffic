@@ -24,8 +24,7 @@ class mongo_host(object):
                     'time' : doc['created_at'],
                     'geo' : doc['geo']['coordinates']
                 }
-                yield result
-                
+                yield result   
         except:
             pass
 
