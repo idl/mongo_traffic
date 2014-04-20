@@ -83,7 +83,7 @@ class GnipDataProcessor(object):
 									self.hashtags_dict[hashtag] += 1
 						if 'geo' in item:
 							if item['geo']['type'] == 'Point':
-								self.output_file.writerow([item['geo']['coordinates'][1], item['geo']['coordinates'][0], item['postedTime']])
+								self.output_file.writerow([item['geo']['coordinates'][0], item['geo']['coordinates'][1], item['postedTime']])
 
 
 				except Exception as e:
