@@ -52,7 +52,7 @@ if __name__ == '__main__':
 
         for result in conn.get_data():
             #print result
-            mapwriter.writerow([result['geo'][1],result['geo'][0],result['time']])
+            mapwriter.writerow([result['geo'][0],result['geo'][1],result['time']])
             count += 1
             if count % 500 == 0:
                 print "Found and wrote: %d" % count
