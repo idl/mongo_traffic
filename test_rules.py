@@ -102,7 +102,7 @@ class GnipDataProcessor(object):
 	
 def is_term_in_text(body, list_text):
 		for text in list_text:
-			if re.search(text, body, re.IGNORECASE):
+			if re.search(re.compile(r'\b%s\b' % text), body, re.IGNORECASE):
 				return text
 		return False
 
