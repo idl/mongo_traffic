@@ -1,5 +1,4 @@
 #Plotting Stored
-=============
 Mathlib Plot of stored traffic aggregreates in mongo_local_traffic.txt
 
 
