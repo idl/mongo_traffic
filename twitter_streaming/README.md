@@ -4,17 +4,9 @@ Streaming Tweets from the public spitzer hose (1% sample) using tweepy. Currentl
 
 
 ## Requirements
-1. Tweepy
-2. PyMongo for MongoDB storage
+1. MathPlotLib
 
 #Utilization:
-To start streaming:
-
 ```
-python twitter_streaming.py
-```
-
-For restarting the streaming client in case of network issues:
-```
-* * * * * <path to python>/python2.7 <path to restart script>/restart.py
+python traffic_mongo_local.py
 ```
