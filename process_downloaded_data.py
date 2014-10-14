@@ -22,11 +22,12 @@ class GnipDataProcessor(object):
 
         for f in file_generator:
             try:
-                gfile = gzip.open('./'+f)
+                gfile = gzip.open(f)
                 for line in gfile:
                     self.process_line(line)
                 gfile.close()
-            except:
+            except Exception as e:
+                print e
                 pass
         if self.chunk != []:
             self.process_chunk()
@@ -78,6 +79,8 @@ if __name__ == '__main__':
     }
     
     conn = mongo_host(mongo_db)
+    
 
+    
     insrt = GnipDataProcessor(str(sys.argv[1]),conn.collection, chunk_size=1000)
     insrt.iter_files()

@@ -8,7 +8,11 @@ import sys
 # import matplotlib.pyplot as plt
 import numpy as np
 from operator import itemgetter
-import plotly
+# (*) useful Python/Plotly tools 
+import plotly.tools as tls 
+# (*) graph object to piece together your Plotly plots
+from plotly.graph_objs import *
+import plotly.plotly as py
 
 class mongo_host(object):
     def __init__(self,mongo_db):
@@ -26,7 +30,7 @@ class mongo_host(object):
                         "m": { '$month': self.time_field },
                         "d": { "$dayOfMonth": self.time_field },
                         "h": { '$hour': self.time_field },
-                        #i: { '$minute': self.time_field },
+                        "i": { '$minute': self.time_field },
                     },
                     # "$match" : {"$gt" : {self.time_field : "2012-10-26T12:00:00.000Z"}
                     "count": {"$sum": 1},
@@ -74,22 +78,53 @@ def plot_data(results):
             traffic_data.writerow([result[0],result[1]])
 
     #plotly stuff
-    py = plotly.plotly("somyamohanty", "94wksibtod")
+    # py = plotly.plotly("somyamohanty", "94wksibtod")
 
-    x = []
-    y = []
+    py.sign_in('somyamohanty','94wksibtod')
+
+    x_data = []
+    y_data = []
 
     for each in traffic:
-        x.append(each[0])
-        y.append(each[1])
+        x_data.append(each[0])
+        y_data.append(each[1])
 
-    layout = {'title': 'Sandy Keyword - Traffic Statistics',
-            'annotations': [{
-                'text':'The date-formatted x-axis will increase it\'s time-resolution when you zoom.'+\
-                        '<br>Click-and-drag your mouse on the plot to see how it responds!',
-                'xref': 'paper', 'yref': 'paper', 'showarrow': False, 'x':0, 'y': 0}]}
+    layout = Layout(
+                  title='MSU vs Auburn Twitter Traffic',
+                  showlegend=False,
+                  xaxis=XAxis(
+                        tickangle=-45
+                        ),
+                  yaxis=YAxis(
+                        zeroline=False,
+                        gridwidth=2
+                        ),
+                  bargap=0.05
+                  )
 
-    py.iplot([{'x':x, 'y':y, 'mode':'markers'}], layout=layout, filename='Sandy Keyword', fileopt='overwrite', width=1000, height=650)
+    data = Data([
+            Scatter(
+                  x= x_data,
+                  y=y_data,
+                  marker=Marker(
+                  color='rgb(142, 124, 195)'
+                  )
+            )
+      ])
+      
+    fig = Figure(data=data, layout=layout)
+
+    plot_url = py.plot(fig, filename='MSUvsAuburn')
+      
+    print plot_url
+
+    # layout = {'title': 'Sandy Keyword - Traffic Statistics',
+    #         'annotations': [{
+    #             'text':'The date-formatted x-axis will increase it\'s time-resolution when you zoom.'+\
+    #                     '<br>Click-and-drag your mouse on the plot to see how it responds!',
+    #             'xref': 'paper', 'yref': 'paper', 'showarrow': False, 'x':0, 'y': 0}]}
+
+    # py.iplot([{'x':x, 'y':y, 'mode':'markers'}], layout=layout, filename='MSU vs Auburn', fileopt='overwrite', width=1000, height=650)
 
     # mathplotlib stuff
     # for each in traffic:
